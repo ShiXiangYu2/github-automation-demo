@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>待办事项</title>
+    <style>
+        body { font-family: system-ui; max-width: 500px; margin: 50px auto; padding: 20px; }
+        .todo-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        .completed { text-decoration: line-through; color: #999; }
+        input[type="text"] { padding: 8px; width: 70%; }
+        button { padding: 8px 16px; }
+        ul { list-style: none; padding: 0; }
+        .delete-btn { color: red; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>待办事项列表</h1>
+    <div>
+        <input type="text" id="todoInput" placeholder="输入新事项...">
+        <button onclick="addTodo()">添加</button>
+    </div>
+    <ul id="todoList"></ul>
+
+    <script>
+        let todos = JSON.parse(localStorage.getItem('todos') || '[]);
+
+        function render() {
+            const list = document.getElementById('todoList');
+            list.innerHTML = todos.map((todo, i) => `
+                <li class="todo-item">
+                    <span>${todo.text}</span>
+                    <span class="delete-btn" onclick="deleteTodo(${i})">删除</span>
+                </li>
+            `).join('');
+        }
+
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            if (input.value.trim()) {
+                todos.push({ text: input.value.trim(), done: false });
+                localStorage.setItem('todos', JSON.stringify(todos));
+                input.value = '';
+                render();
+            }
+        }
+
+        function deleteTodo(index) {
+            todos.splice(index, 1);
+            localStorage.setItem('todos', JSON.stringify(todos));
+            render();
+        }
+
+        render();
+    </script>
+</body>
+</html>
