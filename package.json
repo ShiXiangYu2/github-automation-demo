@@ -1,0 +1,30 @@
+{
+  "name": "github-automation-demo",
+  "version": "1.0.0",
+  "description": "一个简单的待办事项管理应用。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "jest tests/todo.test.js",
+    "test:e2e": "playwright test tests/app.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShiXiangYu2/github-automation-demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ShiXiangYu2/github-automation-demo/issues"
+  },
+  "homepage": "https://github.com/ShiXiangYu2/github-automation-demo#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "jest": "^29.7.0"
+  }
+}
