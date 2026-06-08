@@ -1,0 +1,49 @@
+name: Automation
+
+on:
+  issues:
+    types: [opened, closed]
+  pull_request:
+    types: [opened, closed]
+
+# 授予写入权限，否则 gh CLI 无法修改 Issue/PR
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  automate:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config --global user.email "automation@github.com"
+          git config --global user.name "GitHub Automation"
+
+      # Issue 自动化
+      - name: Issue opened
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        run: |
+          echo "Issue #${{ github.event.issue.number }} opened"
+          gh issue edit ${{ github.event.issue.number }} --add-label "needs-triage"
+
+      - name: Issue closed
+        if: github.event_name == 'issues' && github.event.action == 'closed'
+        run: |
+          echo "Issue #${{ github.event.issue.number }} closed"
+
+      # PR 自动化
+      - name: PR opened
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        run: |
+          echo "PR #${{ github.event.pull_request.number }} opened"
+
+      - name: PR closed
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        run: |
+          echo "PR #${{ github.event.pull_request.number }} closed, merged: ${{ github.event.pull_request.merged }}"
