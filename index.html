@@ -5,12 +5,13 @@
     <title>待办事项</title>
     <style>
         body { font-family: system-ui; max-width: 500px; margin: 50px auto; padding: 20px; }
-        .todo-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
-        .completed { text-decoration: line-through; color: #999; }
+        .todo-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .completed span { text-decoration: line-through; color: #999; }
         input[type="text"] { padding: 8px; width: 70%; }
         button { padding: 8px 16px; }
         ul { list-style: none; padding: 0; }
         .delete-btn { color: red; cursor: pointer; }
+        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -22,13 +23,16 @@
     <ul id="todoList"></ul>
 
     <script>
-        let todos = JSON.parse(localStorage.getItem('todos') || '[]);
+        let todos = JSON.parse(localStorage.getItem('todos') || '[]');
 
         function render() {
             const list = document.getElementById('todoList');
             list.innerHTML = todos.map((todo, i) => `
-                <li class="todo-item">
-                    <span>${todo.text}</span>
+                <li class="todo-item ${todo.done ? 'completed' : ''}">
+                    <span>
+                        <input type="checkbox" ${todo.done ? 'checked' : ''} onchange="toggleTodo(${i})">
+                        ${todo.text}
+                    </span>
                     <span class="delete-btn" onclick="deleteTodo(${i})">删除</span>
                 </li>
             `).join('');
@@ -42,6 +46,12 @@
                 input.value = '';
                 render();
             }
+        }
+
+        function toggleTodo(index) {
+            todos[index].done = !todos[index].done;
+            localStorage.setItem('todos', JSON.stringify(todos));
+            render();
         }
 
         function deleteTodo(index) {
